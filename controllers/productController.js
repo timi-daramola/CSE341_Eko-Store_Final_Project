@@ -2,104 +2,109 @@ const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
-    //swagger.tags = ['contacts'];
+    //swagger.tags = ['products'];
     try {
         const db = mongodb.getDatabase();
         console.log('Using database:', db.databaseName);
-        const result = await db.collection('contacts').find().toArray();
-        console.log('Fetched contacts:', result);
+        const result = await db.collection('products').find().toArray();
+        console.log('Fetched products:', result);
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
     } catch (err) {
-        console.error('Error fetching contacts:', err);
-        res.status(500).json({ error: 'An error occurred while fetching contacts' });
+        console.error('Error fetching products:', err);
+        res.status(500).json({ error: 'An error occurred while fetching products' });
     }
 };
 
 const getSingle = async (req, res) => {
-    //swagger.tags = ['contacts'];
+    //swagger.tags = ['products'];
     try {
-        const contactId = new ObjectId(req.params.id);
+        const productId = new ObjectId(req.params.id);
         const db = mongodb.getDatabase();
         console.log('Using database:', db.databaseName);
-        const result = await db.collection('contacts').findOne({ _id: contactId });
-        console.log('Fetched contact:', result);
+        const result = await db.collection('products').findOne({ _id: productId });
+        console.log('Fetched product:', result);
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
     } catch (err) {
-        console.error('Error fetching contact:', err);
-        res.status(500).json({ error: 'An error occurred while fetching the contact' });
+        console.error('Error fetching product:', err);
+        res.status(500).json({ error: 'An error occurred while fetching the product' });
     }
 };
 
-const createContact = async (req, res) => {
-    //swagger.tags = ['contacts'];
+const createProduct = async (req, res) => {
+    //swagger.tags = ['products'];
     try {
-        const contact = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            favoriteColor: req.body.favoriteColor,
-            birthday: req.body.birthday
-        };
+        const product = new mongoose.Schema({
+            name: { type: String, required: true },
+            description: { type: String, required: true },
+            price: { type: Number, required: true },
+            stock: { type: Number, required: true },
+            category: { type: String, required: true },
+            imageUrl: { type: String },
+            createdAt: { type: Date, default: Date.now },
+        });
+        
         const db = mongodb.getDatabase();
-        const response = await db.collection('contacts').insertOne(contact);
+        const response = await db.collection('products').insertOne(product);
         if (response.acknowledged) {
             res.status(201).json(response);
         } else {
-            res.status(500).json(response.error || { error: 'An error occurred while creating the contact' });
+            res.status(500).json(response.error || { error: 'An error occurred while creating the product' });
         }
     } catch (err) {
-        console.error('Error creating contact:', err);
-        res.status(500).json({ error: 'An error occurred while creating the contact' });
+        console.error('Error creating product:', err);
+        res.status(500).json({ error: 'An error occurred while creating the product' });
     }
 };
 
-const updateContact = async (req, res) => {
-    //swagger.tags = ['contacts'];
+const updateProduct = async (req, res) => {
+    //swagger.tags = ['products'];
     try {
-        const contactId = new ObjectId(req.params.id);
-        const contact = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            favoriteColor: req.body.favoriteColor,
-            birthday: req.body.birthday
-        };
+        const productId = new ObjectId(req.params.id);
+        const product = new mongoose.Schema({
+            name: { type: String, required: true },
+            description: { type: String, required: true },
+            price: { type: Number, required: true },
+            stock: { type: Number, required: true },
+            category: { type: String, required: true },
+            imageUrl: { type: String },
+            createdAt: { type: Date, default: Date.now },
+        });
         const db = mongodb.getDatabase();
-        const response = await db.collection('contacts').replaceOne({ _id: contactId }, contact);
+        const response = await db.collection('products').replaceOne({ _id: productId }, product);
         if (response.modifiedCount > 0) {
             res.status(204).send();
         } else {
-            res.status(500).json(response.error || { error: 'An error occurred while updating the contact' });
+            res.status(500).json(response.error || { error: 'An error occurred while updating the product' });
         }
     } catch (err) {
-        console.error('Error updating contact:', err);
-        res.status(500).json({ error: 'An error occurred while updating the contact' });
+        console.error('Error updating product:', err);
+        res.status(500).json({ error: 'An error occurred while updating the product' });
     }
 };
 
-const deleteContact = async (req, res) => {
-    //swagger.tags = ['contacts'];
+const deleteProduct = async (req, res) => {
+    //swagger.tags = ['products'];
     try {
-        const contactId = new ObjectId(req.params.id);
+        const productId = new ObjectId(req.params.id);
         const db = mongodb.getDatabase();
-        const response = await db.collection('contacts').deleteOne({ _id: contactId });
+        const response = await db.collection('products').deleteOne({ _id: productId });
         if (response.deletedCount > 0) {
             res.status(204).send();
         } else {
-            res.status(500).json(response.error || { error: 'An error occurred while deleting the contact' });
+            res.status(500).json(response.error || { error: 'An error occurred while deleting the product' });
         }
     } catch (err) {
-        console.error('Error deleting contact:', err);
-        res.status(500).json({ error: 'An error occurred while deleting the contact' });
+        console.error('Error deleting product:', err);
+        res.status(500).json({ error: 'An error occurred while deleting the product' });
     }
 };
 
 module.exports = {
     getAll,
     getSingle,
-    createContact,
-    updateContact,
-    deleteContact
+    createProduct,
+    updateProduct,
+    deleteProduct
 };
