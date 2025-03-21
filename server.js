@@ -13,9 +13,9 @@ const swaggerOptions = {
     swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-            title: 'Contacts API',
+            title: 'Products API',
             version: '1.0.0',
-            description: 'API to manage contacts',
+            description: 'API to manage Products',
         },
         servers: [
             {
@@ -29,7 +29,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use('/contacts', require('./routes/contacts'));
+app.use('/products', require('./routes/products'));
 
 // Initialize the database
 mongodb.initDb((err) => {
