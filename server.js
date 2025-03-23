@@ -1,33 +1,14 @@
 const express = require('express');
-const mongodb = require('./data/database');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
 const app = express();
+const { swaggerUi, specs } = require('./swaggerConfig');
+const mongodb = require('./data/database');
 const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
 // Swagger setup
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Products API',
-            version: '1.0.0',
-            description: 'API to manage Products',
-        },
-        servers: [
-            {
-                url: 'http://localhost:3000/',
-            },
-        ],
-    },
-    apis: ['./routes/*.js', './swagger.json'], // Path to the API docs
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/products', require('./routes/products'));
 

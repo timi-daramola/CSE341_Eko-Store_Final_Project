@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGODB_URI || "mongodb+srv://timilehin:timi12345@cluster0.zpbf3.mongodb.net/";
+const uri = process.env.MONGODB_URI || "mongodb+srv://timilehin:timi12345@cluster0.zpbf3.mongodb.net/ecommerce";
 let database;
 
 const initDb = (callback) => {
@@ -10,7 +10,7 @@ const initDb = (callback) => {
         console.log('Database is already initialized');
         return callback(null, database);
     }
-    MongoClient.connect(uri)
+    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
         .then((client) => {
             console.log('Connected to MongoDB');
             database = client.db(); // Correctly assign the database instance
@@ -28,7 +28,7 @@ const getDatabase = () => {
         throw Error('Database not initialized');
     }
     return database;
-}
+};
 
 module.exports = {
     initDb,
