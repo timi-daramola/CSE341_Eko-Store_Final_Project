@@ -12,7 +12,7 @@ const options = {
         },
         servers: [
             {
-                url: 'https://cse341-e-commerce.onrender.com/products',
+                url: 'https://cse341-e-commerce.onrender.com',
             },
         ],
         components: {
