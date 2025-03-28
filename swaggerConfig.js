@@ -12,7 +12,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000',
+                url: 'https://cse341-e-commerce.onrender.com/products',
             },
         ],
         components: {
