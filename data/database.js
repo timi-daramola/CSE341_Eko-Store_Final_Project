@@ -46,7 +46,7 @@ initDb((err, db) => {
         console.log('Database instance is ready to use');
 
         // Example of using the database instance
-        const collection = database.collection('products');
+        const collection = database.collection('products', 'customers');
         collection.find({}).toArray((err, docs) => {
             if (err) {
                 console.error('Failed to fetch documents', err);

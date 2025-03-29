@@ -11,6 +11,7 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/products', require('./routes/products'));
+app.use('/customers', require('./routes/customers'));
 
 // Initialize the database
 mongodb.initDb((err) => {
