@@ -21,12 +21,12 @@ POST http://localhost:3000/customers
 Content-Type: application/json
 
 {
-    "firstName": "John",
-    "lastName": "Mark",
-    "Address": "4 Main road",
-    "Email": "john@gmail.com",
-    "phoneNumber": "0614439827",
-    "createdAt": "2025-03-21"
+    "firstName": "Monday",
+    "lastName": "Green",
+    "address": "4 Main road, Melville",
+    "email": "monday@email.com",
+    "phoneNumber": "087282282",
+    "createdAt": "2025-03-30"
 }
 
 ### GET customers from customers database

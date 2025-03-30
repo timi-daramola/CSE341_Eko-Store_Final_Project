@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
+const productSchema = require('../models/productModel');
 
 /**
  * @swagger
@@ -91,22 +92,24 @@ const getSingle = async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Validation error
  *       500:
  *         description: An error occurred while creating the product
  */
 const createProduct = async (req, res) => {
     try {
+        // Validate the request body using the product schema
+        const { error, value } = productSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
         const db = mongodb.getDatabase();
-        const product = {
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            stock: req.body.stock,
-            category: req.body.category,
-            imageUrl: req.body.imageUrl,
-            createdAt: req.body.createdAt,
-        };
-        const response = await db.collection('products').insertOne(product);
+        const response = await db.collection('products').insertOne(value);
         res.status(201).json(response);
     } catch (err) {
         console.error('Error creating product:', err);
@@ -136,23 +139,25 @@ const createProduct = async (req, res) => {
  *     responses:
  *       204:
  *         description: Product updated successfully
+ *       400:
+ *         description: Validation error
  *       500:
  *         description: An error occurred while updating the product
  */
 const updateProduct = async (req, res) => {
     try {
+        // Validate the request body using the product schema
+        const { error, value } = productSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
         const db = mongodb.getDatabase();
         const productId = new ObjectId(req.params.id);
-        const updatedProduct = {
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            stock: req.body.stock,
-            category: req.body.category,
-            imageUrl: req.body.imageUrl,
-            createdAt: req.body.createdAt,
-        };
-        const response = await db.collection('products').replaceOne({ _id: productId }, updatedProduct);
+        const response = await db.collection('products').replaceOne({ _id: productId }, value);
         if (response.modifiedCount > 0) {
             res.status(204).send();
         } else {

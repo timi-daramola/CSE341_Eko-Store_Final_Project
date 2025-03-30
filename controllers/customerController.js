@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
-
+const customerSchema = require('../models/customerModel');
 
 const getAllCustomers = async (req, res) => {
     try {
@@ -13,7 +13,6 @@ const getAllCustomers = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching customers' });
     }
 };
-
 
 const getSingleCustomer = async (req, res) => {
     try {
@@ -28,19 +27,43 @@ const getSingleCustomer = async (req, res) => {
     }
 };
 
-
+/**
+ * @swagger
+ * /customers:
+ *   post:
+ *     summary: Create a new customer
+ *     tags: [Customers]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Customer'
+ *     responses:
+ *       201:
+ *         description: The created customer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Customer'
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: An error occurred while creating the customer
+ */
 const createCustomer = async (req, res) => {
     try {
+        // Validate the request body using the customer schema
+        const { error, value } = customerSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
         const db = mongodb.getDatabase();
-        const customer = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            Address: req.body.Address,
-            Email: req.body.Email,
-            phoneNumber: req.body.phoneNumber,
-            createdAt: req.body.createdAt,
-        };
-        const response = await db.collection('customers').insertOne(customer);
+        const response = await db.collection('customers').insertOne(value);
         res.status(201).json(response);
     } catch (err) {
         console.error('Error creating customer:', err);
@@ -48,20 +71,47 @@ const createCustomer = async (req, res) => {
     }
 };
 
-
+/**
+ * @swagger
+ * /customers/{id}:
+ *   put:
+ *     summary: Update an existing customer
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The customer ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Customer'
+ *     responses:
+ *       204:
+ *         description: Customer updated successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: An error occurred while updating the customer
+ */
 const updateCustomer = async (req, res) => {
     try {
+        // Validate the request body using the customer schema
+        const { error, value } = customerSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
         const db = mongodb.getDatabase();
         const customerId = new ObjectId(req.params.id);
-        const updatedcustomer = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            Address: req.body.Address,
-            Email: req.body.Email,
-            phoneNumber: req.body.phoneNumber,
-            createdAt: req.body.createdAt,
-        };
-        const response = await db.collection('customers').replaceOne({ _id: customerId }, updatedcustomer);
+        const response = await db.collection('customers').replaceOne({ _id: customerId }, value);
         if (response.modifiedCount > 0) {
             res.status(204).send();
         } else {
@@ -73,7 +123,25 @@ const updateCustomer = async (req, res) => {
     }
 };
 
-
+/**
+ * @swagger
+ * /customers/{id}:
+ *   delete:
+ *     summary: Delete a customer by ID
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The customer ID
+ *     responses:
+ *       204:
+ *         description: Customer deleted successfully
+ *       500:
+ *         description: An error occurred while deleting the customer
+ */
 const deleteCustomer = async (req, res) => {
     try {
         const db = mongodb.getDatabase();

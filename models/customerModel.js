@@ -1,14 +1,27 @@
-const mongoose = require('mongoose');
+const Joi = require('joi');
 
-const customerSchema = new mongoose.Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    Address: { type: String, required: true },
-    Email: { type: String, required: true },
-    phoneNumber: { type: Number, required: true },
-    createdAt: { type: Date, default: Date.now }
+const customerSchema = Joi.object({
+    firstName: Joi.string().required().messages({
+        'string.empty': 'First name is required',
+    }),
+    lastName: Joi.string().required().messages({
+        'string.empty': 'Last name is required',
+    }),
+    address: Joi.string().required().messages({
+        'string.empty': 'Address is required',
+    }),
+    email: Joi.string().email().required().messages({
+        'string.email': 'Email must be a valid email address',
+        'any.required': 'Email is required',
+    }),
+    phoneNumber: Joi.string().pattern(/^\d+$/).required().messages({
+        'string.pattern.base': 'Phone number must contain only digits',
+        'any.required': 'Phone number is required',
+    }),
+    createdAt: Joi.date().required().messages({
+        'date.base': 'CreatedAt must be a valid date',
+        'any.required': 'CreatedAt is required',
+    }),
 });
 
-const Customer = mongoose.model('Customer', customerSchema);
-
-module.exports = Customer;
+module.exports = customerSchema;
