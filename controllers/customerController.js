@@ -2,6 +2,29 @@ const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
 const customerSchema = require('../models/customerModel');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: Customer management
+ */
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Retrieve a list of customers
+ *     tags: [Customers]
+ *     responses:
+ *       200:
+ *         description: A list of customers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Customer'
+ */
 const getAllCustomers = async (req, res) => {
     try {
         const db = mongodb.getDatabase();
@@ -14,6 +37,29 @@ const getAllCustomers = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * /customers/{id}:
+ *   get:
+ *     summary: Retrieve a single customer by ID
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The customer ID
+ *     responses:
+ *       200:
+ *         description: A single customer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Customer'
+ *       404:
+ *         description: Customer not found
+ */
 const getSingleCustomer = async (req, res) => {
     try {
         const db = mongodb.getDatabase();
