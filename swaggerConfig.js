@@ -52,6 +52,38 @@ const options = {
                         },
                     },
                 },
+                Customer: {
+                    type: 'object',
+                    required: ['firstName', 'lastName', 'address', 'email', 'phoneNumber', 'createdAt'],
+                    properties: {
+                        firstName: {
+                            type: 'string',
+                            description: 'The first name of the customer',
+                        },
+                        lastName: {
+                            type: 'string',
+                            description: 'The last name of the customer',
+                        },
+                        address: {
+                            type: 'string',
+                            description: 'The address of the customer',
+                        },
+                        email: {
+                            type: 'string',
+                            format: 'email',
+                            description: 'The email address of the customer',
+                        },
+                        phoneNumber: {
+                            type: 'string',
+                            description: 'The phone number of the customer',
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'The creation date of the customer',
+                        },
+                    },
+                },
             },
         },
     },
