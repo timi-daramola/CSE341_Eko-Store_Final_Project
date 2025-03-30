@@ -32,9 +32,6 @@ Content-Type: application/json
 ### GET customers from customers database
 GET http://localhost:3000/customers
 
-
-
-
 ### Get request from mongodb
 GET https://cse341-e-commerce.onrender.com/products
 
@@ -70,3 +67,41 @@ Content-Type: application/json
 
 ### Delete request from mongodb
 DELETE https://cse341-e-commerce.onrender.com/products/67e880d983d333d85cecb01b
+
+
+
+
+### Get request from mongodb
+GET https://cse341-e-commerce.onrender.com/customers
+
+### Post to customers database
+POST https://cse341-e-commerce.onrender.com/customers
+Content-Type: application/json
+
+{
+    "firstName": "Monday",
+    "lastName": "Green",
+    "address": "4 Main road, Melville",
+    "email": "monday@email.com",
+    "phoneNumber": "087282282",
+    "createdAt": "2025-03-30"
+}
+
+
+
+### Update request from mongodb
+PUT https://cse341-e-commerce.onrender.com/customers/
+Content-Type: application/json
+
+{
+    "name": "Food",
+    "description": "Story book",
+    "price": "100",
+    "stock": "40",
+    "category": "Stationary",
+    "imageUrl": "img.jpg",
+    "createdAt": "2025-03-22"
+}
+
+### Delete request from mongodb
+DELETE https://cse341-e-commerce.onrender.com/customers/
