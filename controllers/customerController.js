@@ -5,13 +5,13 @@ const customerSchema = require('../models/customerModel');
 /**
  * @swagger
  * tags:
- *   name: Products
+ *   name: Customers
  *   description: Customer management
  */
 
 /**
  * @swagger
- * /products:
+ * /customers:
  *   get:
  *     summary: Retrieve a list of customers
  *     tags: [Customers]
