@@ -1,8 +1,11 @@
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
-const dotenv = require('dotenv');
 const userModel = require('./models/userModel'); // Import user model
-dotenv.config();
+
+// Load environment variables (only in development)
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 // Serialize user information into the session
 passport.serializeUser((user, done) => {
@@ -23,9 +26,9 @@ passport.deserializeUser(async (id, done) => {
 passport.use(
     new GitHubStrategy(
         {
-            clientID: process.env.GITHUB_CLIENT_ID,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL,
+            clientID: process.env.GITHUB_CLIENT_ID, // Ensure this is set in Render
+            clientSecret: process.env.GITHUB_CLIENT_SECRET, // Ensure this is set in Render
+            callbackURL: process.env.CALLBACK_URL, // Ensure this is set in Render
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
