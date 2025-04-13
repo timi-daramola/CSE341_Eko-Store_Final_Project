@@ -140,6 +140,6 @@ Content-Type: application/json
 
 
 ### Post on localserver 
-GET https://cse341-e-commerce.onrender.com/reviews/Food
+GET https://cse341-e-commerce.onrender.com/reviews/Table
 Content-Type: application/json
 
