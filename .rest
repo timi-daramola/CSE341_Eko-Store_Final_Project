@@ -109,6 +109,11 @@ DELETE https://cse341-e-commerce.onrender.com/customers/
 
 
 ### Post on localserver 
+GET http://localhost:3000/reviews/Food
+Content-Type: application/json
+
+
+### Post on localserver 
 POST http://localhost:3000/reviews
 Content-Type: application/json
 
@@ -135,10 +140,6 @@ Content-Type: application/json
 
 
 ### Post on localserver 
-GET http://localhost:3000/reviews/Food
-Content-Type: application/json
-
-
-### Post on localserver 
 GET https://cse341-e-commerce.onrender.com/reviews/Food
 Content-Type: application/json
+
