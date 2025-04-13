@@ -32,6 +32,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/products', require('./routes/products'));
 app.use('/customers', require('./routes/customers'));
+app.use('/reviews', require('./routes/reviews'));
 
 // GitHub OAuth Routes
 app.get(

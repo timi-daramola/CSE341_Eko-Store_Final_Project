@@ -105,3 +105,40 @@ Content-Type: application/json
 
 ### Delete request from mongodb
 DELETE https://cse341-e-commerce.onrender.com/customers/
+
+
+
+### Post on localserver 
+POST http://localhost:3000/reviews
+Content-Type: application/json
+
+{
+    "name": "Food",
+    "email": "john@gmail.com",
+    "rating": 5,
+    "comment": "This is an awesome item",
+    "createdAt": "2025-04-13T10:00:00Z"
+}
+
+
+### Post on localserver 
+POST http://https://cse341-e-commerce.onrender.com/reviews
+Content-Type: application/json
+
+{
+    "name": "Food",
+    "email": "john@gmail.com",
+    "rating": 5,
+    "comment": "This is an awesome item",
+    "createdAt": "2025-04-13T10:00:00Z"
+}
+
+
+### Post on localserver 
+GET http://localhost:3000/reviews/Food
+Content-Type: application/json
+
+
+### Post on localserver 
+GET https://cse341-e-commerce.onrender.com/reviews/Food
+Content-Type: application/json
