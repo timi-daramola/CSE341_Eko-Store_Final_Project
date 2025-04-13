@@ -15,7 +15,7 @@ const addReview = async (review) => {
 // Retrieve reviews for a specific product by name
 const getReviewsByProductName = async (name) => {
     const collection = getReviewCollection();
-    return await collection.find({ name }).toArray();
+        return await collection.find({ name }).toArray();
 };
 
 module.exports = {

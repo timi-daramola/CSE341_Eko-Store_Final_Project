@@ -155,7 +155,11 @@ const getReviewsByProductName = async (req, res) => {
             return res.status(400).json({ message: 'Product name is required.' });
         }
 
+        console.log('Fetching reviews for product name:', name);
+
         const reviews = await reviewModel.getReviewsByProductName(name);
+        console.log('Query result:', reviews);
+
         res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch reviews.', error });
