@@ -50,6 +50,15 @@ app.get(
     }
 );
 
+app.get(
+    '/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/' }), // Handle callback from GitHub
+    (req, res) => {
+        // Successful authentication
+        res.redirect('/username'); // Redirect to the profile page
+    }
+);
+
 // User Profile Route
 app.get('/profile', userController.getProfile);
 app.get('/username', userController.getUsername);
