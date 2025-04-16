@@ -46,11 +46,13 @@ app.get(
     (req, res) => {
         // Successful authentication
         res.redirect('/profile'); // Redirect to the profile page
+        res.redirect('/username'); // Redirect to the profile page
     }
 );
 
 // User Profile Route
 app.get('/profile', userController.getProfile);
+app.get('/username', userController.getUsername);
 
 // Logout route
 app.get('/logout', (req, res, next) => {
