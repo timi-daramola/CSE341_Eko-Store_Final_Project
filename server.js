@@ -51,7 +51,6 @@ app.get(
 
 // User Profile Route
 app.get('/profile', userController.getProfile);
-app.get('/username', userController.getUsername);
 
 // Logout route
 app.get('/logout', (req, res, next) => {
