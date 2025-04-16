@@ -127,17 +127,10 @@ const getProfile = (req, res) => {
     res.json(req.user); // Return the authenticated user's profile
 };
 
-const getUsername = (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    res.json(req.user); // Return the authenticated user's profile
-};
 
 module.exports = {
     getProfile,
     getUsers,
     getUserById,
     createUser,
-    getUsername,
 };

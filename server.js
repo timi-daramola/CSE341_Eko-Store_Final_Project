@@ -46,16 +46,6 @@ app.get(
     (req, res) => {
         // Successful authentication
         res.redirect('/profile'); // Redirect to the profile page
-        res.redirect('/username'); // Redirect to the profile page
-    }
-);
-
-app.get(
-    '/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/' }), // Handle callback from GitHub
-    (req, res) => {
-        // Successful authentication
-        res.redirect('/username'); // Redirect to the profile page
     }
 );
 
