@@ -1,9 +1,5 @@
 const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
-const Product = require('../models/productModel');
-
-const { ObjectId } = require('mongodb');
-const mongodb = require('../data/database');
 const productSchema = require('../models/productModel');
 
 /**
@@ -40,7 +36,6 @@ const getAll = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching products' });
     }
 };
-
 
 /**
  * @swagger
