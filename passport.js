@@ -39,6 +39,7 @@ passport.use(
                     displayName: profile.displayName,
                     profileUrl: profile.profileUrl,
                     emails: profile.emails,
+                    accessToken: accessToken, // Store the access token
                 });
                 return done(null, user);
             } catch (err) {

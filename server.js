@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const { swaggerUi, specs } = require('./swaggerConfig');
 const mongodb = require('./data/database');
+const axios = require('axios'); // Import Axios for making HTTP requests
 
 const port = process.env.PORT || 3000;
 
@@ -53,16 +54,37 @@ app.get(
 app.get('/profile', userController.getProfile);
 
 // Logout route
-app.get('/logout', (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
+app.get('/logout', async (req, res, next) => {
+    try {
+        // Revoke the GitHub token
+        const token = req.user?.accessToken; // Retrieve the access token from the user object
+        if (token) {
+            await axios.post(
+                `https://api.github.com/applications/${process.env.GITHUB_CLIENT_ID}/token`,
+                { access_token: token },
+                {
+                    auth: {
+                        username: process.env.GITHUB_CLIENT_ID,
+                        password: process.env.GITHUB_CLIENT_SECRET,
+                    },
+                }
+            );
         }
-        req.session.destroy(() => {
-            res.clearCookie('connect.sid'); // Clear the session cookie
-            res.redirect('/'); // Redirect to the home page after logout
+
+        // Log out the user and destroy the session
+        req.logout((err) => {
+            if (err) {
+                return next(err);
+            }
+            req.session.destroy(() => {
+                res.clearCookie('connect.sid'); // Clear the session cookie
+                res.redirect('/'); // Redirect to the home page after logout
+            });
         });
-    });
+    } catch (err) {
+        console.error('Failed to revoke GitHub token:', err);
+        next(err);
+    }
 });
 
 // Initialize the database
