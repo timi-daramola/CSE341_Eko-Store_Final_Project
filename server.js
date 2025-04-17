@@ -8,7 +8,6 @@ dotenv.config();
 const { swaggerUi, specs } = require('./swaggerConfig');
 const mongodb = require('./data/database');
 const axios = require('axios'); // Import Axios for making HTTP requests
-const reviewsRouter = require('./routes/reviews'); // Import reviews router
 
 const port = process.env.PORT || 3000;
 
@@ -35,9 +34,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/products', require('./routes/products'));
 app.use('/customers', require('./routes/customers'));
 app.use('/reviews', require('./routes/reviews'));
-
-// Routes
-app.use('/api/reviews', reviewsRouter);
 
 // GitHub OAuth Routes
 app.get(
