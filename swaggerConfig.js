@@ -6,9 +6,9 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'E-Commerce API',
+            title: 'Eko-Store API',
             version: '1.0.0',
-            description: 'API documentation for the E-Commerce application',
+            description: 'API documentation for the Eko-Store application',
         },
         servers: [
             {
