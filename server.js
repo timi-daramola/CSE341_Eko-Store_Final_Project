@@ -53,7 +53,7 @@ app.get(
 // User Profile Route
 app.get('/profile', userController.getProfile);
 
-// Logout route
+// Logout Route with Token Revocation
 app.get('/logout', async (req, res, next) => {
     try {
         // Revoke the GitHub token
