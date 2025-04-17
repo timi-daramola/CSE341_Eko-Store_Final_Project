@@ -3,7 +3,6 @@ const mongodb = require('../data/database');
 const Product = require('../models/productModel');
 
 
-
 /**
  * @swagger
  * components:
