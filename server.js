@@ -37,7 +37,7 @@ app.use('/reviews', require('./routes/reviews'));
 // GitHub OAuth Routes
 app.get(
     '/auth/github',
-    passport.authenticate('github', { scope: ['user:email'] }) // Redirect to GitHub for authentication
+    passport.authenticate('github', { scope: ['user:email'], prompt: 'login' }) // Force GitHub to prompt for login
 );
 
 app.get(
@@ -59,6 +59,7 @@ app.get('/logout', (req, res, next) => {
             return next(err);
         }
         req.session.destroy(() => {
+            res.clearCookie('connect.sid'); // Clear the session cookie
             res.redirect('/'); // Redirect to the home page after logout
         });
     });
