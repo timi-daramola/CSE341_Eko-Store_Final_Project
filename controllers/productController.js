@@ -31,15 +31,15 @@ const productSchema = require('../models/productModel');
  */
 const getAll = async (req, res) => {
     try {
-        const products = await Product.find();
+        const db = mongodb.getDatabase();
+        const products = await db.collection('products').find().toArray();
+        res.setHeader('Content-Type', 'application/json');
         res.status(200).json(products);
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch products.', error });
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        res.status(500).json({ error: 'An error occurred while fetching products' });
     }
 };
-
-
-// Get all products
 
 
 /**
