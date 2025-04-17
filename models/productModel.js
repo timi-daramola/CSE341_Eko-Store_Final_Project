@@ -2,12 +2,11 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 const productSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    price: { type: String, required: true }, // Use String to include the dollar symbol
+    price: { type: Number, required: true },
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    imageUrl: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });
 

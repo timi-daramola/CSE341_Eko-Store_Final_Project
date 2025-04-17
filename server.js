@@ -9,6 +9,7 @@ const { swaggerUi, specs } = require('./swaggerConfig');
 const mongodb = require('./data/database');
 const axios = require('axios'); // Import Axios for making HTTP requests
 const reviewsRouter = require('./routes/reviews'); // Import reviews router
+const productsRouter = require('./routes/products'); // Import products router
 
 const port = process.env.PORT || 3000;
 
@@ -38,6 +39,7 @@ app.use('/reviews', require('./routes/reviews'));
 
 // Routes
 app.use('/api/reviews', reviewsRouter);
+app.use('/api/products', productsRouter);
 
 // GitHub OAuth Routes
 app.get(
