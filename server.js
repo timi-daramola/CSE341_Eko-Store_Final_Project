@@ -8,6 +8,7 @@ dotenv.config();
 const { swaggerUi, specs } = require('./swaggerConfig');
 const mongodb = require('./data/database');
 const axios = require('axios'); // Import Axios for making HTTP requests
+const productsRouter = require('./routes/products'); // Import products router
 
 const port = process.env.PORT || 3000;
 
@@ -86,6 +87,9 @@ app.get('/logout', async (req, res, next) => {
         next(err);
     }
 });
+
+// API Routes
+app.use('/api/products', productsRouter);
 
 // Initialize the database
 mongodb.initDb((err) => {

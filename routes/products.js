@@ -34,7 +34,7 @@ router.get('/:id', productController.getSingle);
  *       201:
  *         description: Product added successfully
  */
-router.post('/', ensureAuthenticated, productController.addProduct);
+router.post('/', ensureAuthenticated, productController.createProduct);
 
 router.put('/:id', productController.updateProduct);
 
