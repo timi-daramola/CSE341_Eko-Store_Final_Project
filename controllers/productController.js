@@ -2,59 +2,26 @@ const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
 const Product = require('../models/productModel');
 
+const { ObjectId } = require('mongodb');
+const mongodb = require('../data/database');
+const productSchema = require('../models/productModel');
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Product:
- *       type: object
- *       required:
- *         - name
- *         - description
- *         - price
- *         - stock
- *         - category
- *       properties:
- *         id:
- *           type: string
- *           description: The auto-generated ID of the product
- *         name:
- *           type: string
- *           description: The name of the product
- *         description:
- *           type: string
- *           description: The description of the product
- *         price:
- *           type: number
- *           description: The price of the product
- *         stock:
- *           type: number
- *           description: The stock quantity of the product
- *         category:
- *           type: string
- *           description: The category of the product
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: The date the product was created
- *       example:
- *         name: Sample Product
- *         description: This is a sample product.
- *         price: 99.99
- *         stock: 10
- *         category: Electronics
+ * tags:
+ *   name: Products
+ *   description: Product management
  */
 
 /**
  * @swagger
- * /api/products:
+ * /products:
  *   get:
- *     summary: Get all products
+ *     summary: Retrieve a list of products
  *     tags: [Products]
  *     responses:
  *       200:
- *         description: List of all products
+ *         description: A list of products
  *         content:
  *           application/json:
  *             schema:
@@ -62,13 +29,24 @@ const Product = require('../models/productModel');
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get('/', productController.getAll);
+const getAll = async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to fetch products.', error });
+    }
+};
+
+
+// Get all products
+
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /products/{id}:
  *   get:
- *     summary: Get a single product by ID
+ *     summary: Retrieve a single product by ID
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -79,7 +57,7 @@ router.get('/', productController.getAll);
  *         description: The product ID
  *     responses:
  *       200:
- *         description: The product details
+ *         description: A single product
  *         content:
  *           application/json:
  *             schema:
@@ -87,11 +65,22 @@ router.get('/', productController.getAll);
  *       404:
  *         description: Product not found
  */
-router.get('/:id', productController.getSingle);
+const getSingle = async (req, res) => {
+    try {
+        const db = mongodb.getDatabase();
+        const productId = new ObjectId(req.params.id);
+        const product = await db.collection('products').findOne({ _id: productId });
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(product);
+    } catch (err) {
+        console.error('Error fetching product:', err);
+        res.status(500).json({ error: 'An error occurred while fetching the product' });
+    }
+};
 
 /**
  * @swagger
- * /api/products:
+ * /products:
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
@@ -103,19 +92,39 @@ router.get('/:id', productController.getSingle);
  *             $ref: '#/components/schemas/Product'
  *     responses:
  *       201:
- *         description: The product was successfully created
+ *         description: The created product
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Product'
  *       400:
- *         description: Bad request
+ *         description: Validation error
+ *       500:
+ *         description: An error occurred while creating the product
  */
-router.post('/', ensureAuthenticated, productController.addProduct);
+const createProduct = async (req, res) => {
+    try {
+        // Validate the request body using the product schema
+        const { error, value } = productSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
+        const db = mongodb.getDatabase();
+        const response = await db.collection('products').insertOne(value);
+        res.status(201).json(response);
+    } catch (err) {
+        console.error('Error creating product:', err);
+        res.status(500).json({ error: 'An error occurred while creating the product' });
+    }
+};
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /products/{id}:
  *   put:
  *     summary: Update an existing product
  *     tags: [Products]
@@ -136,15 +145,38 @@ router.post('/', ensureAuthenticated, productController.addProduct);
  *       204:
  *         description: Product updated successfully
  *       400:
- *         description: Bad request
- *       404:
- *         description: Product not found
+ *         description: Validation error
+ *       500:
+ *         description: An error occurred while updating the product
  */
-router.put('/:id', ensureAuthenticated, productController.updateProduct);
+const updateProduct = async (req, res) => {
+    try {
+        // Validate the request body using the product schema
+        const { error, value } = productSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                error: 'Validation error',
+                details: error.details.map((detail) => detail.message),
+            });
+        }
+
+        const db = mongodb.getDatabase();
+        const productId = new ObjectId(req.params.id);
+        const response = await db.collection('products').replaceOne({ _id: productId }, value);
+        if (response.modifiedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json({ error: 'An error occurred while updating the product' });
+        }
+    } catch (err) {
+        console.error('Error updating product:', err);
+        res.status(500).json({ error: 'An error occurred while updating the product' });
+    }
+};
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /products/{id}:
  *   delete:
  *     summary: Delete a product by ID
  *     tags: [Products]
@@ -158,90 +190,18 @@ router.put('/:id', ensureAuthenticated, productController.updateProduct);
  *     responses:
  *       204:
  *         description: Product deleted successfully
- *       404:
- *         description: Product not found
+ *       500:
+ *         description: An error occurred while deleting the product
  */
-router.delete('/:id', ensureAuthenticated, productController.deleteProduct);
-
-// Get all products
-const getAll = async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.status(200).json(products);
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch products.', error });
-    }
-};
-
-// Add a new product
-const addProduct = async (req, res) => {
-    try {
-        const { name, description, price, stock, category } = req.body;
-
-        if (!name || !description || !price || !stock || !category) {
-            return res.status(400).json({ message: 'All fields are required.' });
-        }
-
-        const newProduct = new Product({ name, description, price, stock, category });
-        const savedProduct = await newProduct.save();
-
-        res.status(201).json(savedProduct);
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to add product.', error });
-    }
-};
-
-// Get a single product by ID
-const getSingle = async (req, res) => {
-    try {
-        const productId = new ObjectId(req.params.id);
-        const product = await getProductCollection().findOne({ _id: productId });
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        res.status(200).json(product);
-    } catch (err) {
-        console.error('Error fetching product:', err);
-        res.status(500).json({ error: 'An error occurred while fetching the product' });
-    }
-};
-
-// Update an existing product
-const updateProduct = async (req, res) => {
-    try {
-        const productId = new ObjectId(req.params.id);
-        const updatedProduct = req.body;
-
-        // Validate required fields
-        if (!updatedProduct.name || !updatedProduct.description || !updatedProduct.price || !updatedProduct.stock || !updatedProduct.category) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
-
-        const response = await getProductCollection().replaceOne({ _id: productId }, updatedProduct);
-
-        if (response.modifiedCount > 0) {
-            res.status(204).send();
-        } else {
-            res.status(404).json({ message: 'Product not found or no changes made' });
-        }
-    } catch (err) {
-        console.error('Error updating product:', err);
-        res.status(500).json({ error: 'An error occurred while updating the product' });
-    }
-};
-
-// Delete a product by ID
 const deleteProduct = async (req, res) => {
     try {
+        const db = mongodb.getDatabase();
         const productId = new ObjectId(req.params.id);
-        const response = await getProductCollection().deleteOne({ _id: productId });
-
+        const response = await db.collection('products').deleteOne({ _id: productId });
         if (response.deletedCount > 0) {
             res.status(204).send();
         } else {
-            res.status(404).json({ message: 'Product not found' });
+            res.status(500).json({ error: 'An error occurred while deleting the product' });
         }
     } catch (err) {
         console.error('Error deleting product:', err);
@@ -251,8 +211,8 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
     getAll,
-    addProduct,
     getSingle,
+    createProduct,
     updateProduct,
     deleteProduct,
 };
